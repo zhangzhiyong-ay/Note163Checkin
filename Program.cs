@@ -65,19 +65,26 @@ for (int i = 0; i < _conf.Users.Length; i++)
     client.DefaultRequestHeaders.Add("Cookie", cookie);
 
     long space = 0;
-    space += Deserialize<YdNoteRsp>(result).RewardSpace;
+    long tempSpace = 0;
+    tempSpace = Deserialize<YdNoteRsp>(result).RewardSpace;
+     await Notify($"有道云笔记{title}每日登录获得空间 {tempSpace / 1048576} M");
+    space += tempSpace
 
     //签到
     result = await (await client.PostAsync("https://note.youdao.com/yws/mapi/user?method=checkin", null))
        .Content.ReadAsStringAsync();
-    space += Deserialize<YdNoteRsp>(result).Space;
+    tempSpace = Deserialize<YdNoteRsp>(result).Space;
+    await Notify($"有道云笔记{title}每日签到成功，获得空间 {tempSpace / 1048576} M");
+    space += tempSpace;
 
     //看广告
     for (int j = 0; j < 3; j++)
     {
         result = await (await client.PostAsync("https://note.youdao.com/yws/mapi/user?method=adPrompt", null))
            .Content.ReadAsStringAsync();
-        space += Deserialize<YdNoteRsp>(result).Space;
+        tempSpace = Deserialize<YdNoteRsp>(result).Space;
+        await Notify($"有道云笔记{title}第{j+1}次看广告成功，获得空间 {tempSpace / 1048576} M");
+        space += tempSpace;
     }
 
     //看视频广告
@@ -85,10 +92,12 @@ for (int i = 0; i < _conf.Users.Length; i++)
     {
         result = await (await client.PostAsync("https://note.youdao.com/yws/mapi/user?method=adRandomPrompt", null))
            .Content.ReadAsStringAsync();
-        space += Deserialize<YdNoteRsp>(result).Space;
+        tempSpace = Deserialize<YdNoteRsp>(result).Space;
+        await Notify($"有道云笔记{title}第{j+1}次看视频成功，获得空间 {tempSpace / 1048576} M");
+        space += tempSpace;
     }
 
-    await Notify($"有道云笔记{title}签到成功，共获得空间 {space / 1048576} M");
+    await Notify($"有道云笔记{title}今日共获得空间 {space / 1048576} M");
 }
 Console.WriteLine("签到运行完毕");
 

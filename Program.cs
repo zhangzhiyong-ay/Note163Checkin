@@ -67,8 +67,8 @@ for (int i = 0; i < _conf.Users.Length; i++)
     long space = 0;
     long tempSpace = 0;
     tempSpace = Deserialize<YdNoteRsp>(result).RewardSpace;
-     await Notify($"有道云笔记{title}每日登录获得空间 {tempSpace / 1048576} M");
-    space += tempSpace
+    await Notify($"有道云笔记{title}每日登录获得空间 {tempSpace / 1048576} M");
+    space += tempSpace;
 
     //签到
     result = await (await client.PostAsync("https://note.youdao.com/yws/mapi/user?method=checkin", null))
